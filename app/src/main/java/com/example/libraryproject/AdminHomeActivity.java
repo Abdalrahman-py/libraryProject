@@ -48,6 +48,12 @@ public class AdminHomeActivity extends AppCompatActivity {
 
         // TODO: Add listeners and logic for other admin functions later
         // e.g., binding.buttonManageUsers.setOnClickListener(...)
+        //TODO: manage books in separate activity/screen
+            // TODO: feature to delete books
+            // TODO: feature to update books
+            // TODO: feature to add books form includes book title, category, author and description
+
+
     }
 
     private void loadUserDetails() {

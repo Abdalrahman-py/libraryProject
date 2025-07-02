@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_PHONE = "phone";
     public static final String COL_ROLE = "role"; // "Admin" or "Student"
 
+
     // ... (other table and column constants remain the same)
     public static final String TABLE_BOOKS = "books";
     public static final String COL_BOOK_ID = "id";
@@ -134,18 +135,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Validates user credentials.
-     * @param username The username to check.
+     * @param usernameOrEmail The username to check.
      * @param password The password to check.
      * @return A Cursor containing user data if valid, null otherwise.
      */
-    public Cursor getUser(String username, String password) {
+    public Cursor getUser(String usernameOrEmail, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         // Query now needs to be able to fetch the email as well if needed upon login
-        String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COL_USERNAME + " = ? AND " + COL_PASSWORD + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{username, password});
+        String query = "SELECT * FROM " + TABLE_USERS + " WHERE (" + COL_USERNAME + " = ? OR " + COL_EMAIL + " = ?) AND " + COL_PASSWORD + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{usernameOrEmail,usernameOrEmail, password});
         return cursor; // Caller must close the cursor
     }
-
+//SELECT * FROM users_table WHERE (username = ? OR email = ?) AND password = ?
     /**
      * Checks if a username already exists.
      * @param username The username to check.
@@ -161,6 +162,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Or ensure it's managed carefully. For now, keeping it as is from your original.
         return exists;
     }
+    public boolean checkEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + COL_USER_ID + " FROM " + TABLE_USERS + " WHERE " + COL_EMAIL + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        // db.close(); // You might want to remove db.close() here if checkUsernameExists is often called before another db operation.
+        // Or ensure it's managed carefully. For now, keeping it as is from your original.
+        return exists;
+    }
+
 
     // --- Book Operations --- (These remain the same as your provided file)
     public boolean addBook(String title, String category, int authorId, String description) {
