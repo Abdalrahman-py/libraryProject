@@ -4,61 +4,125 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context=".AdminHomeActivity"> <!-- Make sure this matches your activity's package and name -->
+    tools:context=".AdminHomeActivity">
 
     <TextView
         android:id="@+id/textViewAdminWelcome"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_horizontal"
+        android:textAppearance="?attr/textAppearanceHeadline5"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Welcome, Admin User!" />
 
     <TextView
-        android:id="@+id/textViewAdminRole"
+        android:id="@+id/textViewAdminRoleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAdminWelcome"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Role:"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Role: Admin" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAdminWelcome" />
 
     <TextView
-        android:id="@+id/textViewAdminEmail"
+        android:id="@+id/textViewAdminRoleValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:textAppearance="?attr/textAppearanceBody1"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textViewAdminRoleLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewAdminRoleLabel"
+        tools:text="Admin" />
+
+    <TextView
+        android:id="@+id/textViewAdminEmailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAdminRole"
+        android:text="Email:"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Email: admin@example.com" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAdminRoleLabel" />
+
+    <TextView
+        android:id="@+id/textViewAdminEmailValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:textAppearance="?attr/textAppearanceBody1"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textViewAdminEmailLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewAdminEmailLabel"
+        tools:text="admin@example.com" />
+
+    <TextView
+        android:id="@+id/textViewBooksHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Manage Books"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewAdminEmailLabel" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewBooks"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAdminLogout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBooksHeader"
+        tools:listitem="@layout/item_book" />
+
+    <TextView
+        android:id="@+id/textViewNoBooks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No books added yet. Click '+' to add one."
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewBooks"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerViewBooks"
+        app:layout_constraintStart_toStartOf="@+id/recyclerViewBooks"
+        app:layout_constraintTop_toTopOf="@+id/recyclerViewBooks"
+        tools:visibility="visible" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddBook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="Add New Book"
+        android:src="@drawable/baseline_menu_book_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white"/>
 
     <Button
         android:id="@+id/buttonAdminLogout"
+        style="?attr/materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="Logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- Placeholder for future Admin functionalities -->
-    <TextView
-        android:id="@+id/textViewAdminFunctionsPlaceholder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Admin Functions Will Go Here"
-        android:textSize="18sp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAdminEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/buttonAdminLogout"
-        app:layout_constraintVertical_bias="0.2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
