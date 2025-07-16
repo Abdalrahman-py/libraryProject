@@ -2,6 +2,7 @@
 package com.example.libraryproject; // Your package name
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
         Book book = bookList.get(position);
         holder.textViewTitle.setText(book.getTitle());
-        holder.textViewAuthor.setText(book.getAuthor());
+
+        holder.textViewAuthor.setText(book.getAuthorName());
+
         holder.textViewCategory.setText("Category: " + book.getCategory());
         holder.textViewDescription.setText(book.getDescription());
 

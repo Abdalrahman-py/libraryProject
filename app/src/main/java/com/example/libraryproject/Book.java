@@ -1,31 +1,46 @@
-// Book.java
-package com.example.libraryproject; // Your package name
+package com.example.libraryproject;
 
 public class Book {
     private int id;
     private String title;
     private String category;
-    private String author;
+    private int authorId;
+
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
+    private String authorName;
     private String description;
+    private boolean isBorrowed;
 
     // Constructors
     public Book() {
     }
 
-    public Book(int id, String title, String category, String author, String description) {
+    public Book(int id, String title, String category, int authorId, String description, boolean isBorrowed) {
         this.id = id;
         this.title = title;
         this.category = category;
-        this.author = author;
+        this.authorId = authorId;
         this.description = description;
+        this.isBorrowed = isBorrowed;
     }
 
-    public Book(String title, String category, String author, String description) {
+    public Book(String title, String category, int authorId, String authorName, String description) {
         this.title = title;
         this.category = category;
-        this.author = author;
+        this.authorName = authorName;
+        this.authorId = authorId; // Stores authorId
         this.description = description;
+        this.isBorrowed = false; // Default for new books
     }
+
     // Getters and Setters
     public int getId() {
         return id;
@@ -51,12 +66,12 @@ public class Book {
         this.category = category;
     }
 
-    public String getAuthor() {
-        return author;
+    public int getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
     }
 
     public String getDescription() {
@@ -67,6 +82,14 @@ public class Book {
         this.description = description;
     }
 
+    public boolean isBorrowed() {
+        return isBorrowed;
+    }
+
+    public void setBorrowed(boolean borrowed) {
+        this.isBorrowed = borrowed;
+    }
+
     // Optional: Override toString() for debugging
     @Override
     public String toString() {
@@ -74,8 +97,10 @@ public class Book {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", category='" + category + '\'' +
-                ", author='" + author + '\'' +
+                ", authorName=" +authorName + '\'' +
+                ", authorId=" + authorId + '\'' +
                 ", description='" + description + '\'' +
+                ", isBorrowed=" + isBorrowed +
                 '}';
     }
 }

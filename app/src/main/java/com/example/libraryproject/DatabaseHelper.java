@@ -34,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_BOOK_TITLE = "title";
     public static final String COL_BOOK_CATEGORY = "category";
     public static final String COL_BOOK_AUTHOR_ID = "author_id";
+    public static final String COL_BOOK_AUTHOR_NAME = "author_name";
     public static final String COL_BOOK_DESCRIPTION = "description";
     public static final String COL_BOOK_IS_BORROWED = "is_borrowed";
 
@@ -177,7 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_BOOK_TITLE, book.getTitle());
         cv.put(COL_BOOK_CATEGORY, book.getCategory());
-        cv.put(COL_BOOK_AUTHOR_ID, book.getAuthor());
+        cv.put(COL_BOOK_AUTHOR_ID, book.getAuthorId());
         cv.put(COL_BOOK_DESCRIPTION, book.getDescription());
         cv.put(COL_BOOK_IS_BORROWED, 0);
         long result = db.insert(TABLE_BOOKS, null, cv);
@@ -203,7 +204,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COL_BOOK_TITLE, book.getTitle());
         values.put(COL_BOOK_CATEGORY, book.getCategory());
-        values.put(COL_BOOK_AUTHOR_ID, book.getAuthor());
+        values.put(COL_BOOK_AUTHOR_ID, book.getAuthorId());
         values.put(COL_BOOK_DESCRIPTION, book.getDescription());
 
         int rowsAffected = db.update(TABLE_BOOKS, values, COL_BOOK_ID + " = ?", new String[]{String.valueOf(book.getId())});
@@ -223,7 +224,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
 
-        String selectQuery = "SELECT b." + COL_BOOK_ID + ", b." + COL_BOOK_TITLE + ", b." + COL_BOOK_CATEGORY + ", a." + COL_AUTHOR_NAME + ", b." + COL_BOOK_DESCRIPTION + " FROM " + TABLE_BOOKS + " b" + " INNER JOIN " + TABLE_AUTHORS + " a ON b." + COL_BOOK_AUTHOR_ID + " = a." + COL_AUTHOR_ID;
+        String selectQuery = "SELECT b." + COL_BOOK_ID + ", b." + COL_BOOK_TITLE +
+                ", b." + COL_BOOK_CATEGORY + ", b." + COL_BOOK_AUTHOR_ID +
+                ", a." + COL_AUTHOR_NAME + ", b." + COL_BOOK_DESCRIPTION +
+                " FROM " + TABLE_BOOKS + " b INNER JOIN " + TABLE_AUTHORS + " a " +
+                "ON b." + COL_BOOK_AUTHOR_ID + " = a." + COL_AUTHOR_ID;
 
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -234,28 +239,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Book book = new Book();
 
                 // Get column indices (do this once outside the loop for efficiency if preferred)
-                int idColumnIndex = cursor.getColumnIndex(COL_BOOK_ID);
-                int titleColumnIndex = cursor.getColumnIndex(COL_BOOK_TITLE);
-                int authorColumnIndex = cursor.getColumnIndex(COL_AUTHOR_NAME);
-                int categoryColumnIndex = cursor.getColumnIndex(COL_BOOK_CATEGORY);
-                int descriptionColumnIndex = cursor.getColumnIndex(COL_BOOK_DESCRIPTION);
-
-                // Check if columns exist to avoid errors
-                if (idColumnIndex != -1) {
-                    book.setId(cursor.getInt(idColumnIndex));
-                }
-                if (titleColumnIndex != -1) {
-                    book.setTitle(cursor.getString(titleColumnIndex));
-                }
-                if (authorColumnIndex != -1) {
-                    book.setAuthor(cursor.getString(authorColumnIndex));
-                }
-                if (categoryColumnIndex != -1) {
-                    book.setCategory(cursor.getString(categoryColumnIndex));
-                }
-                if (descriptionColumnIndex != -1) {
-                    book.setDescription(cursor.getString(descriptionColumnIndex));
-                }
+                book.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_BOOK_ID)));
+                book.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COL_BOOK_TITLE)));
+                book.setCategory(cursor.getString(cursor.getColumnIndexOrThrow(COL_BOOK_CATEGORY)));
+                book.setAuthorId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_BOOK_AUTHOR_ID))); // ✅ ID
+                book.setAuthorName(cursor.getString(cursor.getColumnIndexOrThrow(COL_AUTHOR_NAME))); // ✅ NAME
+                book.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(COL_BOOK_DESCRIPTION)));
 
                 // Add book to list
                 bookList.add(book);
@@ -454,5 +443,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_AUTHORS;
         return db.rawQuery(query, null);
+    }
+    /**
+     * Retrieves the name of an author by their ID.
+     *
+     * @param authorId The ID of the author.
+     * @return The name of the author, or null if not found or an error occurs.
+     */
+    public String getAuthorNameById(int authorId) {
+        if (authorId <= 0) { // Basic validation
+            return null;
+        }
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String authorName = null;
+        try {
+            // Query the authors table for the author with the given ID
+            cursor = db.query(
+                    TABLE_AUTHORS,                     // Table to query
+                    new String[]{COL_AUTHOR_NAME},     // Columns to return
+                    COL_AUTHOR_ID + " = ?",            // WHERE clause
+                    new String[]{String.valueOf(authorId)}, // Values for the WHERE clause
+                    null,                              // Group by
+                    null,                              // Having
+                    null                               // Order by
+            );
+            if (cursor != null && cursor.moveToFirst()) {
+                int nameColumnIndex = cursor.getColumnIndex(COL_AUTHOR_NAME);
+                if (nameColumnIndex != -1) {
+                    authorName = cursor.getString(nameColumnIndex);
+                } else {
+                    Log.e("DatabaseHelper", "Column COL_AUTHOR_NAME not found inTABLE_AUTHORS.");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error getting author name by ID: " + authorId, e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            // db.close(); // Only close if this DatabaseHelper instance is not long-lived or shared.
+            // If it's a singleton or managed by the Activity/Fragment lifecycle, don't close here.
+        }
+        return authorName;
     }
 }
